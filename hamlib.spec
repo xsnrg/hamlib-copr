@@ -71,8 +71,7 @@ Requires:       hamlib%{?_isa} = %{version}-%{release}, python3
 %description -n python3-%{name}
 Hamlib Python Language bindings to allow radio control from Python scripts.
 
-# Perl and Tcl bindings disabled (they cause packaging failures on newer Fedora)
-# No %package for perl-%{name} or tcl-%{name}
+# Perl and Tcl bindings disabled for compatibility across Fedora versions
 
 %prep
 %autosetup -p1 -n hamlib-%{version}
@@ -143,16 +142,7 @@ make V=1 check
 %{_libdir}/libhamlib.so
 %{_datadir}/aclocal/hamlib.m4
 %dir %{_includedir}/hamlib
-%{_includedir}/hamlib/ampclass.h
-%{_includedir}/hamlib/amplifier.h
-%{_includedir}/hamlib/amplist.h
-%{_includedir}/hamlib/multicast.h
-%{_includedir}/hamlib/rig.h
-%{_includedir}/hamlib/riglist.h
-%{_includedir}/hamlib/rig_dll.h
-%{_includedir}/hamlib/rotator.h
-%{_includedir}/hamlib/rotlist.h
-%{_libdir}/pkgconfig/hamlib.pc
+%{_includedir}/hamlib/*.h
 
 %files doc
 %doc __tmp_doc/*
@@ -167,7 +157,8 @@ make V=1 check
 
 %files -n python3-%{name}
 %{python3_sitearch}/Hamlib*
+%{python3_sitearch}/_Hamlib.so*
 
 %changelog
 * Mon Jun 01 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.1-1
-- Update to 4.7.1 (Perl + Tcl bindings disabled for compatibility across Fedora versions)
+- Update to 4.7.1 (Perl + Tcl bindings disabled, added new headers + Python files)
