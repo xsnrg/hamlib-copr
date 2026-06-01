@@ -1,5 +1,3 @@
-%global tclver 9.0   # kept for reference, but Tcl binding is disabled
-
 Name:           hamlib
 Version:        4.7.1
 Release:        1%{?dist}
@@ -28,7 +26,6 @@ BuildRequires:  perl-devel
 BuildRequires:  perl-generators
 BuildRequires:  perl(ExtUtils::MakeMaker)
 
-# Filter provides from private libraries.
 %{?perl_default_filter}
 
 %description
@@ -67,15 +64,6 @@ Requires:       hamlib-c++%{?_isa} = %{version}-%{release}
 Hamlib radio control library C++ binding development headers and libraries
 for building C++ applications with Hamlib.
 
-%package -n perl-%{name}
-Summary:        Hamlib radio control library Perl binding
-Requires:       hamlib%{?_isa} = %{version}-%{release}
-Obsoletes:      hamlib-perl < 3.0
-Provides:       hamlib-perl = %{version}-%{release}
-
-%description -n perl-%{name}
-Hamlib PERL Language bindings to allow radio control from PERL scripts.
-
 %package -n python3-%{name}
 Summary:        Hamlib radio control library Python binding
 Requires:       hamlib%{?_isa} = %{version}-%{release}, python3
@@ -83,9 +71,8 @@ Requires:       hamlib%{?_isa} = %{version}-%{release}, python3
 %description -n python3-%{name}
 Hamlib Python Language bindings to allow radio control from Python scripts.
 
-# Tcl binding completely disabled (prevents packaging failures on rawhide)
-# %package -n tcl-%{name}
-# ...
+# Perl and Tcl bindings disabled (they cause packaging failures on newer Fedora)
+# No %package for perl-%{name} or tcl-%{name}
 
 %prep
 %autosetup -p1 -n hamlib-%{version}
@@ -97,16 +84,16 @@ export PYTHON=%{__python3}
 export PYTHON=%{__python2}
 %endif
 
-# === CUSTOM COMPILE FLAGS GO HERE (uncomment and edit as needed) ===
+# === CUSTOM COMPILE FLAGS (uncomment/edit as needed) ===
 # export CFLAGS="${CFLAGS} -O3 -march=native -flto"
 # export CXXFLAGS="${CXXFLAGS} -O3 -march=native -flto"
 # export LDFLAGS="${LDFLAGS} -flto"
 
 %configure \
         --disable-static \
-        --with-perl-binding \
         --with-python-binding \
-        --without-tcl-binding   # Tcl binding disabled
+        --without-perl-binding \
+        --without-tcl-binding
 
 %make_build
 
@@ -125,14 +112,12 @@ for f in `find doc/html/search -type f -maxdepth 1`; do
     install -D -m 0644 $f %{buildroot}%{_docdir}/%{name}/html/`echo $f | cut -d '/' -f3`
 done
 
-# Move installed docs to include them in subpackage via %%doc magic
 rm -rf __tmp_doc ; mkdir __tmp_doc
 mv %{buildroot}%{_docdir}/%{name}/* __tmp_doc
 
-# Fix permissions
 find %{buildroot} -type f -name Hamlib.so -exec chmod 0755 {} ';'
 
-# Remove unneeded files
+# Cleanup
 find %{buildroot} -name \*.la -exec rm -f {} ';'
 find %{buildroot} -type f -name pkgIndex.tcl -exec rm -f {} ';'
 find %{buildroot} -type f -name .packlist -exec rm -f {} ';'
@@ -180,13 +165,9 @@ make V=1 check
 %{_includedir}/hamlib/rigclass.h
 %{_includedir}/hamlib/rotclass.h
 
-%files -n perl-%{name}
-%{_libdir}/perl5/vendor_perl/auto/Hamlib
-%{_libdir}/perl5/vendor_perl/Hamlib.pm
-
 %files -n python3-%{name}
 %{python3_sitearch}/Hamlib*
 
 %changelog
-* Mon Jun 01 2026 Jim <kf0sbp@proton.me> - 4.7.1-1
-- Update to 4.7.1 (Tcl binding disabled for compatibility)
+* Mon Jun 01 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.1-1
+- Update to 4.7.1 (Perl + Tcl bindings disabled for compatibility across Fedora versions)
