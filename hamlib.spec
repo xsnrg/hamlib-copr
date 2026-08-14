@@ -1,5 +1,5 @@
 Name:           hamlib
-Version:        4.7.1
+Version:        4.7.2
 Release:        1%{?dist}
 Summary:        Run-time library to control radio transceivers and receivers
 
@@ -162,3 +162,5 @@ make V=1 check
 %changelog
 * Mon Jun 01 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.1-1
 - Update to 4.7.1 (Perl + Tcl disabled, broad globs for headers + Python files)
+* Thu Aug 13 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.2-1
+- Update to 4.7.2
