@@ -160,7 +160,7 @@ make V=1 check
 %{python3_sitearch}/*
 
 %changelog
-* Mon Jun 01 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.1-1
-- Update to 4.7.1 (Perl + Tcl disabled, broad globs for headers + Python files)
 * Thu Aug 13 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.2-1
 - Update to 4.7.2
+* Mon Jun 01 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.1-1
+- Update to 4.7.1 (Perl + Tcl disabled, broad globs for headers + Python files)
