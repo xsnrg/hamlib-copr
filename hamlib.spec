@@ -1,6 +1,6 @@
 Name:           hamlib
 Version:        4.7.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Run-time library to control radio transceivers and receivers
 
 License:        GPL-2.0-or-later and LGPL-2.0-or-later
@@ -83,8 +83,8 @@ export PYTHON=%{__python3}
 export PYTHON=%{__python2}
 %endif
 
-# === CUSTOM COMPILE FLAGS (uncomment/edit as needed) ===
-# export CFLAGS="${CFLAGS} -O3 -march=native -flto"
+# Python 3.13+ dropped PyInt_FromLong. SWIG still emits it.
+export CFLAGS="%{optflags} -DPyInt_FromLong=PyLong_FromLong"
 # export CXXFLAGS="${CXXFLAGS} -O3 -march=native -flto"
 # export LDFLAGS="${LDFLAGS} -flto"
 
@@ -160,6 +160,9 @@ make V=1 check
 %{python3_sitearch}/*
 
 %changelog
+* Sun Sep 27 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.2-2
+- Map PyInt_FromLong to PyLong_FromLong for Python 3.14
+
 * Thu Aug 13 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.2-1
 - Update to 4.7.2
 * Mon Jun 01 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.1-1
