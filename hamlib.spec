@@ -1,11 +1,14 @@
 Name:           hamlib
 Version:        4.7.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Run-time library to control radio transceivers and receivers
 
 License:        GPL-2.0-or-later and LGPL-2.0-or-later
 URL:            https://hamlib.github.io/
 Source0:        https://github.com/Hamlib/Hamlib/releases/download/%{version}/%{name}-%{version}.tar.gz
+# Only sleep 5 ms in read_string_generic() when a read really returned EAGAIN;
+# stale errno made FLRig replies take ~1.2 s each (delayed PTT in WSJT-X).
+Patch0:         hamlib-4.7.2-iofunc-errno-eagain.patch
 
 ExcludeArch:    i686
 
@@ -160,6 +163,10 @@ make V=1 check
 %{python3_sitearch}/*
 
 %changelog
+* Fri Nov 13 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.2-3
+- Fix stale errno in read_string_generic(): 5 ms per-byte sleep made every
+  FLRig call take ~1.2 s and delayed PTT by 8-13 s
+
 * Sun Sep 27 2026 Jim Howard <xsnrg@users.noreply.github.com> - 4.7.2-2
 - Map PyInt_FromLong to PyLong_FromLong for Python 3.14
 

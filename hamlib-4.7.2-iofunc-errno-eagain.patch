@@ -1,0 +1,19 @@
+--- a/src/iofunc.c
++++ b/src/iofunc.c
+@@ -1430,12 +1430,15 @@
+ #endif
+ #endif
+ shortcut:
++            /* Clear stale errno: a successful read() does not reset it, so a
++             * single earlier EAGAIN made every later byte pay the 5 ms sleep. */
++            errno = 0;
+             rd_count = port_read_generic(p, &rxbuffer[total_count],
+                                          expected_len == 1 ? 1 : minlen, direct);
+ //            rig_debug(RIG_DEBUG_VERBOSE, "%s: read %d bytes tot=%d\n", __func__, (int)rd_count, total_count);
+             minlen -= rd_count;
+ 
+-            if (errno == EAGAIN)
++            if (rd_count < 0 && errno == EAGAIN)
+             {
+                 hl_usleep(5 * 1000);
+ //                rig_debug(RIG_DEBUG_WARN, "%s: port_read is busy? direct=%d\n", __func__,
